@@ -1,8 +1,8 @@
 {
-  "type":"object",
-  "$schema": "http://json-schema.org/draft-04/schema",
-  "id": "http://jsonschema.net",
-  "$ref": "http://localhost/plugins/content/component/model.schema",
+  "type": "object",
+  "$schema": "http: //json-schema.org/draft-04/schema",
+  "id": "http: //jsonschema.net",
+  "$ref": "http: //localhost/plugins/content/component/model.schema",
   "globals": {
     "ariaRegion": {
       "type": "string",
@@ -12,7 +12,7 @@
       "validators": []
     }
   },
-  "properties":{
+  "properties": {
     "_supportedLayout": {
       "type": "string",
       "required": true,
@@ -29,17 +29,17 @@
       "help": "This is the instruction text"
     },
     "_attempts": {
-      "type":"number",
-      "required":true,
-      "default":1,
+      "type": "number",
+      "required": true,
+      "default": 1,
       "title": "Attempts",
-      "inputType":"Number",
+      "inputType": "Number",
       "validators": ["required", "number"],
       "help": "How many attempts the learner is allow"
     },
     "_shouldDisplayAttempts": {
-      "type":"boolean",
-      "required":false,
+      "type": "boolean",
+      "required": false,
       "default": false,
       "title": "Display Attempts",
       "inputType": {"type": "Boolean", "options": [true, false]},
@@ -47,8 +47,8 @@
       "help": "Select 'true' to display the numbers of attempts left"
     },
     "_questionWeight": {
-      "type":"number",
-      "required":false,
+      "type": "number",
+      "required": false,
       "default": 1,
       "title": "Question Weight",
       "inputType": "Number",
@@ -74,8 +74,8 @@
       "help": "Label for the end of the slider scale"
     },
     "_scaleStart": {
-      "type":"number",
-      "required":true,
+      "type": "number",
+      "required": true,
       "default": 1,
       "title": "Scale Start",
       "inputType": "Number",
@@ -83,16 +83,34 @@
       "help": "What number the scale should start on"
     },
     "_scaleEnd": {
-      "type":"number",
-      "required":true,
+      "type": "number",
+      "required": true,
       "default": 1,
       "title": "Scale End",
       "inputType": "Number",
       "validators": ["required", "number"],
       "help": "What number the scale should end on"
     },
+    "_scaleStep": {
+      "type": "number",
+      "required": false,
+      "default": 1,
+      "title": "Scale Step",
+      "inputType": "Number",
+      "validators": ["number"],
+      "help": "How much the scale should increment between steps"
+    },
+    "_scaleLabel": {
+      "type": "string",
+      "required": false,
+      "default": "",
+      "title": "Scale Label",
+      "inputType": "Text",
+      "validators": [],
+      "help": "A suffix for each item on the scale e.g. 'kg', 'MB'"
+    },
     "_correctAnswer": {
-      "type":"number",
+      "type": "number",
       "default": 1,
       "title": "Correct Answer",
       "inputType": "Number",
@@ -100,10 +118,10 @@
       "help": "Correct answer on the scale"
     },
     "_correctRange": {
-      "type":"object",
-      "properties":{
+      "type": "object",
+      "properties": {
         "_bottom": {
-          "type":"number",
+          "type": "number",
           "default": 1,
           "title": "Correct Range - Bottom",
           "inputType": "Number",
@@ -111,7 +129,7 @@
           "help": "Correct bottom range answer on the scale"
         },
         "_top": {
-          "type":"number",
+          "type": "number",
           "default": 1,
           "title": "Correct Range - Top",
           "inputType": "Number",
@@ -121,17 +139,26 @@
       }
     },
     "_showNumber": {
-      "type":"boolean",
-      "required":true,
+      "type": "boolean",
+      "required": true,
       "default": true,
       "title": "Show Numbers on Scale",
       "inputType": {"type": "Boolean", "options": [true, false]},
       "validators": [],
       "help": "Select 'true' to show the numbers along the scale"
     },
+    "_raiseNumber": {
+      "type": "boolean",
+      "required": false,
+      "default": true,
+      "title": "Show the selected number above the range numbers",
+      "inputType": {"type": "Boolean", "options": [true, false]},
+      "validators": [],
+      "help": "Select 'false' to show the selected number on the sliding bar"
+    },
     "_showScaleIndicator": {
-      "type":"boolean",
-      "required":true,
+      "type": "boolean",
+      "required": true,
       "default": true,
       "title": "Show scale indicators",
       "inputType": {"type": "Boolean", "options": [true, false]},
@@ -139,16 +166,16 @@
       "help": "Select 'true' to show the lines along the scale"
     },
     "_buttons": {
-      "type":"object",
+      "type": "object",
       "title": "Buttons",
       "required": false,
-      "properties":{
+      "properties": {
         "_submit": {
-          "type":"object",
+          "type": "object",
           "title": "Submit",
-          "properties":{
+          "properties": {
             "buttonText": {
-              "type":"string",
+              "type": "string",
               "required": false,
               "default": "",
               "title": "",
@@ -157,7 +184,7 @@
               "help": "Button label text for the submit button"
             },
             "ariaLabel": {
-              "type":"string",
+              "type": "string",
               "required": false,
               "default": "",
               "title": "",
@@ -168,11 +195,11 @@
           }
         },
         "_reset": {
-          "type":"object",
+          "type": "object",
           "title": "Reset",
-          "properties":{
+          "properties": {
             "buttonText": {
-              "type":"string",
+              "type": "string",
               "required": false,
               "default": "",
               "title": "",
@@ -181,7 +208,7 @@
               "help": "Button label text for the reset button"
             },
             "ariaLabel": {
-              "type":"string",
+              "type": "string",
               "required": false,
               "default": "",
               "title": "",
@@ -192,11 +219,11 @@
           }
         },
         "_showCorrectAnswer": {
-          "type":"object",
+          "type": "object",
           "title": "Show Correct Answer",
-          "properties":{
+          "properties": {
             "buttonText": {
-              "type":"string",
+              "type": "string",
               "required": false,
               "default": "",
               "title": "",
@@ -205,7 +232,7 @@
               "help": "Button label text to show the model answer"
             },
             "ariaLabel": {
-              "type":"string",
+              "type": "string",
               "required": false,
               "default": "",
               "title": "",
@@ -216,11 +243,11 @@
           }
         },
         "_hideCorrectAnswer": {
-          "type":"object",
+          "type": "object",
           "title": "Hide Correct Answer",
-          "properties":{
+          "properties": {
             "buttonText": {
-              "type":"string",
+              "type": "string",
               "required": false,
               "default": "",
               "title": "",
@@ -229,7 +256,7 @@
               "help": "Button label text to hide the model answer"
             },
             "ariaLabel": {
-              "type":"string",
+              "type": "string",
               "required": false,
               "default": "",
               "title": "",
@@ -240,11 +267,11 @@
           }
         },
         "_showFeedback": {
-          "type":"object",
+          "type": "object",
           "title": "Show Feedback",
-          "properties":{
+          "properties": {
             "buttonText": {
-              "type":"string",
+              "type": "string",
               "required": false,
               "default": "",
               "title": "",
@@ -253,7 +280,7 @@
               "help": "Button label text to show feedback"
             },
             "ariaLabel": {
-              "type":"string",
+              "type": "string",
               "required": false,
               "default": "",
               "title": "",
@@ -264,7 +291,7 @@
           }
         },
         "remainingAttemptsText": {
-          "type":"string",
+          "type": "string",
           "required": false,
           "default": "",
           "title": "Attempts Remaining Text",
@@ -273,7 +300,7 @@
           "help": "Shown when there are multiple attempts left"
         },
         "remainingAttemptText": {
-          "type":"string",
+          "type": "string",
           "required": false,
           "default": "",
           "title": "Final Attempt Text",
@@ -284,13 +311,13 @@
       }
     },
     "_feedback": {
-      "type":"object",
-      "required":true,
+      "type": "object",
+      "required": true,
       "title": "Feedback",
-      "properties":{
+      "properties": {
         "correct": {
-          "type":"string",
-          "required":true,
+          "type": "string",
+          "required": true,
           "default": "",
           "title": "Correct",
           "inputType": "TextArea",
@@ -298,12 +325,12 @@
           "help": "Correct feedback for this question"
         },
         "_incorrect": {
-          "type":"object",
-          "required":true,
+          "type": "object",
+          "required": true,
           "title": "Incorrect Feedback",
-          "properties":{
+          "properties": {
             "final": {
-              "type":"string",
+              "type": "string",
               "required": true,
               "default": "",
               "title": "Incorrect Final",
@@ -312,7 +339,7 @@
               "help": "Incorrect feedback for the final attempt"
             },
             "notFinal": {
-              "type":"string",
+              "type": "string",
               "required": true,
               "default": "",
               "title": "Incorrect Not Final",
@@ -323,11 +350,11 @@
           }
         },
         "_partlyCorrect": {
-          "type":"object",
-          "required":true,
-          "properties":{
+          "type": "object",
+          "required": true,
+          "properties": {
             "final": {
-              "type":"string",
+              "type": "string",
               "required": true,
               "default": "",
               "title": "Partly Correct Final",
@@ -336,7 +363,7 @@
               "help": "Partly correct feedback for the final attempt"
             },
             "notFinal": {
-              "type":"string",
+              "type": "string",
               "required": true,
               "default": "",
               "title": "Partly Correct Not Final",
