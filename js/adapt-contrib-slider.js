@@ -15,7 +15,7 @@ define(
         },
 
         resetQuestionOnRevisit: function() {
-          this.$sliderWidget.removeClass( 'disabled' );
+          this.disableQuestion();
           this.deselectAllItems();
           this.resetQuestion();
         },
@@ -25,10 +25,6 @@ define(
 
           if( !this.model.get( '_items' ) ) {
             this.setupModelItems();
-          }
-          
-          if( !this.model.get( '_isSubmitted' ) ) {
-            this.selectItem( 0 );
           }
 
           Handlebars.registerHelper( 'sliderPosition',
@@ -46,8 +42,35 @@ define(
           this.$sliderWidget = this.$el.find( '.slider-widget' );
           this.$sliderScaleNumbers = this.$el.find( '.slider-scale-numbers' );
           this.selectItem( 0 );
-          this.setupDragables();
           this.setReadyStatus();
+        },
+
+        cssAnimations: function() {
+          var blAnimation = false,
+              strAnimation = 'animation',
+              strKeyframePrefix = '',
+              arrDOMPrefixes = ['Webkit', 'Moz', 'O', 'ms', 'Khtml'],
+              strPrefix  = '',
+              elm = document.createElement( 'div' );
+
+          if( elm.style.AnimationName !== undefined
+              || elm.style.animationName !== undefined ) {
+            blAnimation = true;
+          } else {
+            for( var intPrefix = 0, intDomPrefixes = arrDOMPrefixes.length; intPrefix < intDomPrefixes; intPrefix++ ) {
+              if( elm.style[arrDOMPrefixes[intPrefix] + 'AnimationName'] ) {
+                strPrefix = arrDOMPrefixes[intPrefix];
+                strAnimation = strPrefix + 'Animation';
+                strKeyframePrefix = '-' + strPrefix.toLowerCase() + '-';
+                blAnimation = true;
+                break;
+              }
+            }
+          }
+
+          this.cssAnimations = blAnimation ? function() { return true; } : function() { return false; };
+
+          return blAnimation;
         },
 
         setupModelItems: function() {
@@ -73,15 +96,20 @@ define(
           this.model.set( '_items', arrItems );
         },
 
-        setupDragables: function() {
-          var theRealThis = this;
+        destroyDragables: function() {
+          if( this.$sliderHandle ) {
+            this.$sliderHandle.off( 'mousedown touchstart' );
+          }
+        },
 
-          this.$sliderHandle.off( 'mousedown touchstart' ).on( 'mousedown touchstart', this.onStartDrag );
+        setupDragables: function() {
+          this.destroyDragables();
+          this.$sliderHandle.off( 'mousedown touchstart' ).on( 'mousedown touchstart', _.bind( this.onStartDrag, this ) );
         },
 
         onStartDrag: function( e ) {
           this.$sliderHandle.stop( true ).addClass( 'dragging' ),
-          $( '#wrapper' ).on( 'mousemove touchmove', e, _.bind( this.doPointerMove, this ) ).one( 'mouseup touchend', this.onEndDrag );
+          $( '#wrapper' ).on( 'mousemove touchmove', _.bind( this.doPointerMove, this ) ).one( 'mouseup touchend', _.bind( this.onEndDrag, this ) );
         },
 
         onEndDrag: function( e ) {
@@ -230,7 +258,7 @@ define(
           this.setHandleText( intLabel + ( this.model.get( '_scaleLabel' ) || '' ) );
         },
 
-        setHandleText: function( strText ) {
+        setHandleText: function( strText, blHalfSize ) {
           if( this.$sliderHandle ) {
             this.$sliderHandle.attr(
               {
@@ -238,6 +266,12 @@ define(
                 'aria-valuenow': strText
               }
             );
+
+            if( blHalfSize === true ) {
+              this.$sliderHandle.addClass( 'half-size' );
+            } else {
+              this.$sliderHandle.removeClass( 'half-size' );
+            }
           }
         },
 
@@ -258,16 +292,21 @@ define(
 
         animateToPercentage: function( fltPercentage ) {
           if( this.$sliderHandle ) {
-            this.$sliderHandle.velocity(
-              {
-                left: fltPercentage + '%'
-              }
-            ),
-            this.$sliderBarIndicator.velocity(
-              {
-                width: fltPercentage + '%'
-              }
-            );
+            if( this.cssAnimations() ) {
+              this.$sliderHandle.css( 'left', fltPercentage + '%' ),
+              this.$sliderBarIndicator.width( fltPercentage + '%' );
+            } else {
+              this.$sliderHandle.stop( true ).animate(
+                {
+                  left: fltPercentage + '%'
+                }, 200
+              ),
+              this.$sliderBarIndicator.stop( true ).animate(
+                {
+                  width: fltPercentage + '%'
+                }, 200
+              );
+            }
           }
         },
 
@@ -285,6 +324,7 @@ define(
                 selectedItem = item;
                 this.model.set( '_selectedItem', selectedItem );
                 this.selectItem( item.value );
+                this.animateToSelectedItem();
                 break;
               }
             }
@@ -294,16 +334,19 @@ define(
             this.setScore();
             this.showMarking();
             this.setupFeedback();
+            this.destroyDragables();
           }
         },
 
         // Used by question to disable the question during submit and complete stages
         disableQuestion: function() {
+          this.destroyDragables();
           this.$sliderWidget.addClass( 'disabled' );
         },
 
         // Used by question to enable the question during interactions
         enableQuestion: function() {
+          this.setupDragables();
           this.$sliderWidget.removeClass( 'disabled' );
         },
 
@@ -317,6 +360,7 @@ define(
 
         //This preserve the state of the users answers for returning or showing the users answer
         storeUserAnswer: function() {
+          this.destroyDragables();
           this.model.set( '_userAnswer', this.model.get( '_selectedItem' ).value );
         },
 
@@ -344,6 +388,7 @@ define(
         // This is important and should give the user feedback on how they answered the question
         // Normally done through ticks and crosses by adding classes
         showMarking: function() {
+          this.destroyDragables();
           this.$sliderWidget.removeClass( 'correct incorrect' ).addClass( 'show-marking ' + ( this.isCorrect() ? 'correct' : 'incorrect' ) );
         },
 
@@ -393,7 +438,7 @@ define(
           if( intAnswer !== '' ) {
             this.setHandleText( intAnswer + ( this.model.get( '_scaleLabel' ) || '' ) );
           } else {
-            this.setHandleText( objRange._bottom + '&ndash;' + objRange._top + ( this.model.get( '_scaleLabel' ) || '' ) );
+            this.setHandleText( objRange._bottom + '-' + objRange._top + ( this.model.get( '_scaleLabel' ) || '' ), true );
           }
         },
 

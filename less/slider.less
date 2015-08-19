@@ -12,7 +12,7 @@
 @slider-marking-size: 30px;                         // Size of the tick/cross icon that shows upon marking
 @slider-bottom-spacing: 43px;                       // Spacing at the bottom of the slider bar
 
-.sponge-slider-component {
+.slider-component {
   .slider-widget {
     &.submitted .slider-scale-number.user-answer,
     &.show-user-answer .slider-scale-number.user-answer,
@@ -54,6 +54,20 @@
         &.incorrect.show-correct-answer .slider-icons .slider-correct-icon,
         &.incorrect.show-user-answer .slider-icons .slider-incorrect-icon {
           display: block !important;
+        }
+      }
+    }
+
+    &.disabled {
+      .slider-bar-container {
+        .slider-bar {
+          .slider-handle {
+            .no-touch & {
+              &:hover {
+                background-color: @white;
+              }
+            }
+          }
         }
       }
     }
@@ -214,6 +228,10 @@
 
           z-index: 3;
 
+          &.active {
+            outline: 3px #F09 solid;
+          }
+
           &.show-number {
             &::after {
               width: @slider-indicator-size;
@@ -249,6 +267,12 @@
             -webkit-transition: none;
             -moz-transition: none;
             transition: none;
+          }
+
+          &.half-size {
+            &::after {
+              font-size: @slider-number-font-size / 2;
+            }
           }
 
           .ie8 & {
