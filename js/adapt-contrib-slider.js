@@ -50,32 +50,6 @@ define(
           this.setReadyStatus();
         },
 
-        cssAnimations: function() {
-          var blAnimation = false,
-              strAnimation = 'animation',
-              strKeyframePrefix = '',
-              arrDOMPrefixes = ['Webkit', 'Moz', 'O', 'ms', 'Khtml'],
-              strPrefix  = '',
-              elm = document.createElement( 'div' );
-
-          if( elm.style.AnimationName !== undefined
-              || elm.style.animationName !== undefined ) {
-            blAnimation = true;
-          } else {
-            for( var intPrefix = 0, intDomPrefixes = arrDOMPrefixes.length; intPrefix < intDomPrefixes; intPrefix++ ) {
-              if( elm.style[arrDOMPrefixes[intPrefix] + 'AnimationName'] ) {
-                strPrefix = arrDOMPrefixes[intPrefix];
-                strAnimation = strPrefix + 'Animation';
-                strKeyframePrefix = '-' + strPrefix.toLowerCase() + '-';
-                blAnimation = true;
-                break;
-              }
-            }
-          }
-
-          return blAnimation;
-        },
-
         setupModelItems: function() {
           var arrItems = [],
               intAnswer = this.model.get( '_correctAnswer' ) || '',
@@ -284,21 +258,16 @@ define(
 
         animateToPercentage: function( fltPercentage ) {
           if( this.$sliderHandle ) {
-            if( this.cssAnimations() ) {
-              this.$sliderHandle.css( 'left', fltPercentage + '%' ),
-              this.$sliderBarIndicator.width( fltPercentage + '%' );
-            } else {
-              this.$sliderHandle.stop( true ).animate(
-                {
-                  left: fltPercentage + '%'
-                }, 200
-              ),
-              this.$sliderBarIndicator.stop( true ).animate(
-                {
-                  width: fltPercentage + '%'
-                }, 200
-              );
-            }
+            this.$sliderHandle.velocity(
+              {
+                left: fltPercentage + '%'
+              }
+            ),
+            this.$sliderBarIndicator.velocity(
+              {
+                width: fltPercentage + '%'
+              }
+            );
           }
         },
 

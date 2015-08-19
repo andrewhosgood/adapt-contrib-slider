@@ -1,16 +1,16 @@
-@slider-indicator-size: 30px;
-@slider-tick-top-spacing: 10px;
-@slider-tick-size: 10px;
-@slider-tick-width: 2px;
-@slider-number-font-size: 16px;
-@slider-number-height: @slider-indicator-size;
-@slider-numbers-bottom-spacing: 65px;
-@slider-bar-padding: 8px;
-@slider-bar-padding-sides: @slider-bar-padding * 3;
-@slider-bar-height: 6px;
-@slider-handle-size: 30px;
-@slider-marking-size: 30px;
-@slider-bottom-spacing: 43px;
+@slider-indicator-size: 30px;                       // The floating 'blob' that contains the current selection
+@slider-tick-top-spacing: 10px;                     // Space between the numbers and the scale indicator
+@slider-tick-size: 10px;                            // The length of the ticks on the scale indicator
+@slider-tick-width: 2px;                            // The width of the ticks and the bar of the scale indicator
+@slider-number-font-size: 16px;                     // Font size of the numbers on the scale
+@slider-number-height: @slider-indicator-size;      // Could be different if not styled as circles
+@slider-numbers-bottom-spacing: 65px;               // Spacing between the numbers on the scale and the slider bar
+@slider-bar-padding: 8px;                           // Padding around the actual slider bar
+@slider-bar-padding-sides: @slider-bar-padding * 3; // Left/right padding of the slider bar
+@slider-bar-height: 6px;                            // Height of the slider bar
+@slider-handle-size: 30px;                          // Width and height of the handle on the slider bar
+@slider-marking-size: 30px;                         // Size of the tick/cross icon that shows upon marking
+@slider-bottom-spacing: 43px;                       // Spacing at the bottom of the slider bar
 
 .sponge-slider-component {
   .slider-widget {
