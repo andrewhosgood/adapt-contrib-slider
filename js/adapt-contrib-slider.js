@@ -3,9 +3,8 @@ define(
     'coreJS/adapt',
     'coreViews/questionView',
     'handlebars'
-    'modernizr'
   ],
-  function( Adapt, QuestionView, Handlebars, Modernizr ) {
+  function( Adapt, QuestionView, Handlebars ) {
     var Slider = QuestionView.extend(
       {
         events: {
