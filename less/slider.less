@@ -62,10 +62,10 @@
       .slider-bar-container {
         .slider-bar {
           .slider-handle {
-            .no-touch & {
-              &:hover {
-                background-color: @white;
-              }
+            cursor: default;
+
+            &:hover {
+              background-color: @white !important;
             }
           }
         }
@@ -225,6 +225,7 @@
           transition: left 200ms ease;
 
           cursor: pointer;
+          cursor: -webkit-grab;
 
           z-index: 3;
 
@@ -267,6 +268,8 @@
             -webkit-transition: none;
             -moz-transition: none;
             transition: none;
+
+            cursor: -webkit-grabbing;
           }
 
           &.half-size {

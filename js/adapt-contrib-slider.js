@@ -3,8 +3,9 @@ define(
     'coreJS/adapt',
     'coreViews/questionView',
     'handlebars'
+    'modernizr'
   ],
-  function( Adapt, QuestionView, Handlebars ) {
+  function( Adapt, QuestionView, Handlebars, Modernizr ) {
     var Slider = QuestionView.extend(
       {
         events: {
@@ -41,36 +42,8 @@ define(
           this.$sliderBarIndicator = this.$el.find( '.slider-bar-indicator' );
           this.$sliderWidget = this.$el.find( '.slider-widget' );
           this.$sliderScaleNumbers = this.$el.find( '.slider-scale-numbers' );
-          this.selectItem( 0 );
+          this.setupDragables();
           this.setReadyStatus();
-        },
-
-        cssAnimations: function() {
-          var blAnimation = false,
-              strAnimation = 'animation',
-              strKeyframePrefix = '',
-              arrDOMPrefixes = ['Webkit', 'Moz', 'O', 'ms', 'Khtml'],
-              strPrefix  = '',
-              elm = document.createElement( 'div' );
-
-          if( elm.style.AnimationName !== undefined
-              || elm.style.animationName !== undefined ) {
-            blAnimation = true;
-          } else {
-            for( var intPrefix = 0, intDomPrefixes = arrDOMPrefixes.length; intPrefix < intDomPrefixes; intPrefix++ ) {
-              if( elm.style[arrDOMPrefixes[intPrefix] + 'AnimationName'] ) {
-                strPrefix = arrDOMPrefixes[intPrefix];
-                strAnimation = strPrefix + 'Animation';
-                strKeyframePrefix = '-' + strPrefix.toLowerCase() + '-';
-                blAnimation = true;
-                break;
-              }
-            }
-          }
-
-          this.cssAnimations = blAnimation ? function() { return true; } : function() { return false; };
-
-          return blAnimation;
         },
 
         setupModelItems: function() {
@@ -292,16 +265,16 @@ define(
 
         animateToPercentage: function( fltPercentage ) {
           if( this.$sliderHandle ) {
-            if( this.cssAnimations() ) {
+            if( Modernizr.csstransitions ) {
               this.$sliderHandle.css( 'left', fltPercentage + '%' ),
               this.$sliderBarIndicator.width( fltPercentage + '%' );
             } else {
-              this.$sliderHandle.stop( true ).animate(
+              this.$sliderHandle.stop( true ).velocity(
                 {
                   left: fltPercentage + '%'
                 }, 200
               ),
-              this.$sliderBarIndicator.stop( true ).animate(
+              this.$sliderBarIndicator.stop( true ).velocity(
                 {
                   width: fltPercentage + '%'
                 }, 200
