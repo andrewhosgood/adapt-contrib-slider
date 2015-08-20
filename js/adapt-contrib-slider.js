@@ -15,12 +15,14 @@ define(
         },
 
         resetQuestionOnRevisit: function() {
+          console.log( 'resetQuestionOnRevisit' );
           this.disableQuestion();
           this.deselectAllItems();
           this.resetQuestion();
         },
 
         setupQuestion: function() {
+          console.log( 'setupQuestion' );
           var theRealThis = this;
 
           if( !this.model.get( '_items' ) ) {
@@ -32,20 +34,30 @@ define(
               return ( intIndex / ( theRealThis.model.get( '_items' ).length - 1 ) ) * 100;
             }
           );
+          Handlebars.registerHelper( 'raiseNumberClass',
+            function() {
+              return theRealThis.model.get( '_raiseNumber' ) === false ? '' : ' raise-number';
+            }
+          );
 
           this.restoreUserAnswers();
         },
 
         onQuestionRendered: function() {
+          console.log( 'onQuestionRendered' );
           this.$sliderHandle = this.$el.find( '.slider-handle' );
           this.$sliderBarIndicator = this.$el.find( '.slider-bar-indicator' );
           this.$sliderWidget = this.$el.find( '.slider-widget' );
           this.$sliderScaleNumbers = this.$el.find( '.slider-scale-numbers' );
+
+          this.animateToSelectedItem();
+
           this.setupDragables();
           this.setReadyStatus();
         },
 
         setupModelItems: function() {
+          console.log( 'setupModelItems' );
           var arrItems = [],
               intAnswer = this.model.get( '_correctAnswer' ) || '',
               objRange = this.model.get( '_correctRange' ) || {},
@@ -69,38 +81,46 @@ define(
         },
 
         destroyDragables: function() {
-          if( this.$sliderHandle ) {
-            this.$sliderHandle.off( 'mousedown touchstart' );
-          }
+          console.log( 'destroyDragables' );
+          this.$sliderHandle.off( 'mousedown touchstart' );
         },
 
         setupDragables: function() {
+          console.log( 'setupDragables' );
           this.destroyDragables();
-          this.$sliderHandle.off( 'mousedown touchstart' ).on( 'mousedown touchstart', _.bind( this.onStartDrag, this ) );
+
+          if( !this.model.get( '_isSubmitted' ) ) {
+            this.$sliderHandle.off( 'mousedown touchstart' ).on( 'mousedown touchstart', _.bind( this.onStartDrag, this ) );
+          }
         },
 
         onStartDrag: function( e ) {
+          console.log( 'onStartDrag' );
           this.$sliderHandle.stop( true ).addClass( 'dragging' ),
           $( '#wrapper' ).on( 'mousemove touchmove', _.bind( this.doPointerMove, this ) ).one( 'mouseup touchend', _.bind( this.onEndDrag, this ) );
         },
 
         onEndDrag: function( e ) {
+          console.log( 'onEndDrag' );
           $( '#wrapper' ).off( 'mousemove touchmove' ),
           this.$sliderHandle.removeClass( 'dragging' );
           this.resolveToClosestItem( e );
         },
 
         onHandleFocus: function( e ) {
+          console.log( 'onHandleFocus' );
           e.preventDefault();
           this.$sliderHandle.on( 'keydown', _.bind( this.onKeyDown, this ) );
         },
 
         onHandleBlur: function( e ) {
+          console.log( 'onHandleBlur' );
           e.preventDefault();
           this.$sliderHandle.off( 'keydown' );
         },
 
         onKeyDown: function( e ) {
+          console.log( 'onKeyDown' );
           var intKey = e.which;
 
           // Tab
@@ -134,10 +154,12 @@ define(
         },
 
         onItemSelected: function( e ) {
+          console.log( 'onItemSelected' );
           e.preventDefault();
 
           if( !this.model.get( '_isComplete' )
-              && !this.$sliderWidget.hasClass( 'disabled' ) ) {
+                && !this.model.get( '_isSubmitted' )
+                && !this.$sliderWidget.hasClass( 'disabled' ) ) {
             var intItemIndex = $( e.currentTarget ).attr( 'data-index' );
 
             this.selectItem( intItemIndex );
@@ -147,6 +169,7 @@ define(
         },
 
         getPercentageAlongBar: function( intPointerXPosition ) {
+          console.log( 'getPercentageAlongBar' );
           var intBarLeftmostPoint = this.$el.find( '.slider-bar' ).offset().left,
               intBarWidth = this.$el.find( '.slider-bar' ).width(),
               intBarRightmostPoint = intBarLeftmostPoint + intBarWidth;
@@ -163,6 +186,7 @@ define(
         },
 
         doPointerMove: function( e ) {
+          console.log( 'doPointerMove' );
           e.preventDefault();
           e.stopPropagation();
 
@@ -176,10 +200,12 @@ define(
         },
 
         getPercentagePerItem: function() {
+          console.log( 'getPercentagePerItem' );
           return 100 / ( this.model.get( '_items' ).length - 1 );
         },
 
         getClosestItemIndex: function( e ) {
+          console.log( 'getClosestItemIndex' );
           var intPointerXPosition;
 
           if( e.originalEvent.touches
@@ -199,11 +225,13 @@ define(
         },
 
         resolveToClosestItem: function( e ) {
+          console.log( 'resolveToClosestItem' );
           this.selectItem( this.getClosestItemIndex( e ) );
           this.animateToSelectedItem();
         },
 
         selectItem: function( intSelectedItem ) {
+          console.log( 'selectItem' );
           var objItems = this.model.get( '_items' );
 
           _.each(
@@ -225,12 +253,14 @@ define(
         },
 
         setHandleItemText: function( intItem ) {
+          console.log( 'setHandleItemText' );
           var intLabel = ( intItem ? this.model.get( '_items' )[intItem].value : this.model.get( '_selectedItem' ).value );
 
           this.setHandleText( intLabel + ( this.model.get( '_scaleLabel' ) || '' ) );
         },
 
         setHandleText: function( strText, blHalfSize ) {
+          console.log( 'setHandleText' );
           if( this.$sliderHandle ) {
             this.$sliderHandle.attr(
               {
@@ -248,14 +278,17 @@ define(
         },
 
         getSelectedItemIndex: function() {
+          console.log( 'getSelectedItemIndex' );
           return this.model.get( '_selectedItem' ).index;
         },
 
         animateToSelectedItem: function() {
+          console.log( 'animateToSelectedItem' );
           this.animateToItem( this.getSelectedItemIndex() );
         },
 
         animateToItem: function( intItemIndex ) {
+          console.log( 'animateToItem' );
           var fltPercentagePerItem = this.getPercentagePerItem(),
               fltPercentage = intItemIndex * fltPercentagePerItem;
 
@@ -263,26 +296,26 @@ define(
         },
 
         animateToPercentage: function( fltPercentage ) {
-          if( this.$sliderHandle ) {
-            if( Modernizr.csstransitions ) {
-              this.$sliderHandle.css( 'left', fltPercentage + '%' ),
-              this.$sliderBarIndicator.width( fltPercentage + '%' );
-            } else {
-              this.$sliderHandle.stop( true ).velocity(
-                {
-                  left: fltPercentage + '%'
-                }, 200
-              ),
-              this.$sliderBarIndicator.stop( true ).velocity(
-                {
-                  width: fltPercentage + '%'
-                }, 200
-              );
-            }
+          console.log( 'animateToPercentage' );
+          if( Modernizr.csstransitions ) {
+            this.$sliderHandle.css( 'left', fltPercentage + '%' ),
+            this.$sliderBarIndicator.width( fltPercentage + '%' );
+          } else {
+            this.$sliderHandle.stop( true ).velocity(
+              {
+                left: fltPercentage + '%'
+              }, 200
+            ),
+            this.$sliderBarIndicator.stop( true ).velocity(
+              {
+                width: fltPercentage + '%'
+              }, 200
+            );
           }
         },
 
         restoreUserAnswers: function() {
+          console.log( 'restoreUserAnswers' );
           if( this.model.get( '_isSubmitted' ) ) {
             var selectedItem = {},
                 items = this.model.get( '_items' ),
@@ -293,10 +326,8 @@ define(
 
               if( item.value == userAnswer ) {
                 item._isSelected = true;
-                selectedItem = item;
-                this.model.set( '_selectedItem', selectedItem );
-                this.selectItem( item.value );
-                this.animateToSelectedItem();
+                this.model.set( '_selectedItem', item );
+                this.selectItem( item.index );
                 break;
               }
             }
@@ -306,38 +337,44 @@ define(
             this.setScore();
             this.showMarking();
             this.setupFeedback();
-            this.destroyDragables();
           }
         },
 
         // Used by question to disable the question during submit and complete stages
         disableQuestion: function() {
+          console.log( 'disableQuestion' );
           this.destroyDragables();
+
           this.$sliderWidget.addClass( 'disabled' );
         },
 
         // Used by question to enable the question during interactions
         enableQuestion: function() {
+          console.log( 'enableQuestion' );
           this.setupDragables();
           this.$sliderWidget.removeClass( 'disabled' );
         },
 
         //Use to check if the user is allowed to submit the question
         canSubmit: function() {
+          console.log( 'canSubmit' );
           return true;
         },
 
         // Blank method for question to fill out when the question cannot be submitted
-        onCannotSubmit: function() {},
+        onCannotSubmit: function() {
+          console.log( 'onCannotSubmit' );},
 
         //This preserve the state of the users answers for returning or showing the users answer
         storeUserAnswer: function() {
+          console.log( 'storeUserAnswer' );
           this.destroyDragables();
           this.model.set( '_userAnswer', this.model.get( '_selectedItem' ).value );
         },
 
         // this return a boolean based upon whether to question is correct or not
         isCorrect: function() {
+          console.log( 'isCorrect' );
           if( this.model.get( '_selectedItem' ).correct ) {
             this.model.set( '_numberOfCorrectAnswers', 1 );
             this.model.set( '_isAtLeastOneCorrectSelection', 1 );
@@ -351,6 +388,7 @@ define(
 
         // Used to set the score based upon the _questionWeight
         setScore: function() {
+          console.log( 'setScore' );
           var numberOfCorrectAnswers = this.model.get( '_numberOfCorrectAnswers' ),
               questionWeight = this.model.get( '_questionWeight' );
 
@@ -360,17 +398,21 @@ define(
         // This is important and should give the user feedback on how they answered the question
         // Normally done through ticks and crosses by adding classes
         showMarking: function() {
+          console.log( 'showMarking' );
           this.destroyDragables();
+
           this.$sliderWidget.removeClass( 'correct incorrect' ).addClass( 'show-marking ' + ( this.isCorrect() ? 'correct' : 'incorrect' ) );
         },
 
         // Used by the question to determine if the question is incorrect or partly correct
         isPartlyCorrect: function() {
+          console.log( 'isPartlyCorrect' );
           return this.model.get( '_isAtLeastOneCorrectSelection' );
         },
 
         // Used by the question view to reset the stored user answer
         resetUserAnswer: function() {
+          console.log( 'resetUserAnswer' );
           this.model.set(
             {
               _selectedItem: {},
@@ -380,6 +422,7 @@ define(
         },
 
         getCorrectAnswer: function() {
+          console.log( 'getCorrectAnswer' );
           var intAnswer = this.model.get( '_correctAnswer' ) || '',
               objRange = this.model.get( '_correctRange' ) || {},
               intStart = this.model.get( '_scaleStart' ),
@@ -391,6 +434,7 @@ define(
         },
 
         getValuePercetage: function( intValue ) {
+          console.log( 'getValuePercetage' );
           var intAnswer = this.model.get( '_correctAnswer' ) || '',
               objRange = this.model.get( '_correctRange' ) || {},
               intStart = this.model.get( '_scaleStart' ),
@@ -402,6 +446,7 @@ define(
 
         // Used by the question to display the correct answer to the user
         showCorrectAnswer: function() {
+          console.log( 'showCorrectAnswer' );
           var intAnswer = this.model.get( '_correctAnswer' ) || '',
               objRange = this.model.get( '_correctRange' ) || {};
 
@@ -418,6 +463,7 @@ define(
         // hide the correct answer
         // Should use the values stored in storeUserAnswer
         hideCorrectAnswer: function() {
+          console.log( 'hideCorrectAnswer' );
           this.animateToSelectedItem();
           this.setHandleItemText();
         },
@@ -425,12 +471,14 @@ define(
         // Used by the question view to reset the look and feel of the component.
         // This could also include resetting item data
         resetQuestion: function() {
+          console.log( 'resetQuestion' );
           this.selectItem( 0 );
-          this.animateToSelectedItem();
+          //this.animateToSelectedItem();
         },
 
         // this should reset the selected state of each item
         deselectAllItems: function() {
+          console.log( 'deselectAllItems' );
           _.each(
             this.model.get( '_items' ),
             function( item ) {

@@ -13,7 +13,7 @@
             </div>
             <div class="slider-bar-container">
                 <div class="slider-bar component-item-color{{#unless _isEnabled}}{{#if _isCorrect}} correct{{else}} incorrect{{/if}}{{/unless}}">
-                    <div class="slider-handle component-item-color component-item-text-color{{#if _showNumber}} show-number{{/if}}{{#if _raiseNumber}} raise-number{{/if}}" data-value="6" tabindex="-1" aria-hidden="true"></div>
+                    <div class="slider-handle component-item-color component-item-text-color{{#if _showNumber}} show-number{{/if}}{{raiseNumberClass}}" data-value="6" tabindex="-1" aria-hidden="true"></div>
                     <div class="slider-bar-indicator"></div>
                     {{#each _items}}
                         <a href="#" tabindex="0" role="button" class="slider-bar-number" style="left: {{sliderPosition @index}}%;" data-index="{{@index}}"></a>
